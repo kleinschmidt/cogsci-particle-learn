@@ -66,15 +66,24 @@ samples from the MCMC algorithm), as well as on the weights (more uniform
 weights are better).
 
 
+## Simulations
 
+Vary:
+  * number of particles
+  * concentration parameter α
+  * number of observations seen by the model
+  * (maybe: rejuvination threshold)
 
+Using data based on VOT distributions estiamted from:
+  * the Buckeye corpus of conversational English [@Nelson2017]
+  * (TODO: two and three components from @Lisker1964 [following @McMurray2009b])
+  * (TODO: single-talker VOT distributions from Buckeye?)
 
+Measure number of clusters, according to:
+  * (approximate) maximum a-posteriori: particle with highest posterior
+    probability
+  * marginal distribution of cluster counts (approximate posterior probability
+    of each number of clusters, across runs)
+  * expected number of clusters (weighted average across particles)
 
-
-
-  
-
-
-Bayesian nonparametrics provide a principled framework for understanding
-distributional learning: they don't impose a maximum number of categories, and
-only have an inductive bias towards simplicity.  
+And compare with the standard batch algorithm (Gibbs sampler).
