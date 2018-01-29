@@ -1,5 +1,5 @@
 module Experiments
-using Particles, Distributions
+using Particles, Distributions, DataFrames, Underscore
 
 export Experiment,
     Result,
@@ -7,7 +7,8 @@ export Experiment,
     run_gibbs,
     flatten,
     dictofarrays,
-    experiments
+    experiments,
+    results_summary
 
 
 struct Experiment
@@ -152,6 +153,23 @@ experiments(; kw...) = experiments(Dict(kw))
 
 Dict(r::Result) = Dict([k=>getfield(r,k) for k in fieldnames(r)])
 Dict(e::Experiment, r::Result) = merge(Dict(r), Dict(:seed=>e.seed), e.params)
+
+flatten(es::Array{Experiment,N}, rs::Array{Vector{Result},N}, k::Symbol) where N =
+    reduce(append!, [], (zip(flatten(e, k), r) for (e,r) in zip(es, rs)))
+
+function results_summary(ers)
+    @_ [Dict(er...) for er in ers] |>
+    dictofarrays |>
+    DataFrame |>
+    by(_, [:num_particle, :num_obs, :α]) do d
+        DataFrame(low = mean(d[:K_map] .< 2),
+                  success = mean(d[:K_map] .== 2),
+                  high = mean(d[:K_map] .> 2),
+                  avg_K_map = mean(d[:K_map]),
+                  avg_K_mean = mean(d[:K_mean]),
+                  avg_p_K2 = mean(get.(d[:p_of_K], 2, 0)))
+    end
+end
 
 
 end # module Experiments
