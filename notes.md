@@ -87,3 +87,17 @@ Measure number of clusters, according to:
   * expected number of clusters (weighted average across particles)
 
 And compare with the standard batch algorithm (Gibbs sampler).
+
+## Discussion 
+
+* Does it work? Kinda.
+* Problem: forget history.  Don't keep track of full uncertainty.  Can never go
+  back to simpler solution.  (could be easy to fix: just allow "jumps" where you
+  combine clusters...need to work out math, but it should be a matter of doing
+  basically a MH step, right?)
+* Compare to other approaches:
+    * Joe adn bob mixture of gaussians.  Spiritually similar but doesn't have
+      the same interpretation (inference).  Hard to see how it connects with
+      other levels (lexical etc.)
+    * Connectionist models.....???
+
