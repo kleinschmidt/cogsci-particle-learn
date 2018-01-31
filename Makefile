@@ -7,4 +7,4 @@ all: cogsci-particle-learn.tex
 	pandoc -f markdown -t latex -o $@ --template=latexpaper/cogsci_template.tex $<
 
 %.pdf: %.tex
-	latexmk -pdf $< && latexmk -c
+	latexmk -halt-on-error -pdf $< && latexmk -c
