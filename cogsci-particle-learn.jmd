@@ -1,0 +1,18 @@
+---
+title: "Learning distributions as they come: Particle filter models for online
+  distributional learning of phonetic categories"
+author: 
+- "Dave F. Kleinschmidt (davidfk@princeton.edu)"
+- "Princeton Neuroscience Institute"
+- "Princeton, NJ 08544 USA"
+abstract: >
+  Babies must learn the structure of their native language---including the
+  number and properties of phonetic categories. Blah BLah.
+bibliography: /home/dave/Documents/papers/zotero.bib
+---
+
+```{julia; results="hide"}
+
+using Particles
+
+```
