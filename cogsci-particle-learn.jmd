@@ -13,8 +13,84 @@ abstract: >
 bibliography: /home/dave/Documents/papers/zotero.bib
 ---
 
-```{julia; results="hide"}
+```{julia; echo=false; results="hide"}
+
+using Weave
+Weave.set_chunk_defaults(Dict(:echo=>false,
+                              :results=>"hide"))
 
 using Particles
+using Underscore
+
+using Distributions, ConjugatePriors, DataFrames, DataFramesMeta, JLD2
+using Gadfly
+
+using Colors
+ngray(start, finish) = n -> linspace(Gray(start), Gray(finish), n)
+
+```
+
+```{julia}
+
+using Experiments
+
+include("VOTs.jl")
+using .VOTs
+
+using FileIO
+
+# exs, results = load("results/run2-2018-01-30T10:05:12.518.jld2", "exs", "results")
+# gibbs_exs, gibbs_res = load("results/run1_gibbs_2018-01-30T12:18:31.076.jld2", "gibbs_exs", "gibbs_res")
+
+@load "results/run2-2018-01-30T10:05:12.518.jld2" exs results
+@load "results/run1_gibbs_2018-01-30T12:18:31.076.jld2" gibbs_exs gibbs_res
+
+run2_ers = flatten(exs, results, :num_obs)
+run2_summary = results_summary(run2_ers)
+
+gibbs_summary = results_summary(zip(gibbs_exs, gibbs_res))
+
+```
+
+
+# Results
+
+
+```{julia}
+
+# plot p(K | x, α) for various values of alpha
+
+function p_of_K(d)
+    pks = d[:p_of_K]
+    max_k = maximum(length.(pks))
+    ps = zeros(Float64, max_k)
+    for pk in pks
+        ps[1:length(pk)] .+= pk
+    end
+    DataFrame(K=1:max_k, p_of_K = ps ./ size(d,1))
+end
+
+run2_p_of_K = @_ run2_ers |>
+    [Dict(er...) for er in _] |>
+    dictofarrays |>
+    DataFrame |>
+    by(_, [:num_particle, :num_obs, :α], p_of_K)
+
+gibbs_p_of_K = @_ zip(gibbs_exs, gibbs_res) |>
+    [Dict(er...) for er in _] |>
+    dictofarrays |>
+    DataFrame |>
+    by(_, [:num_particle, :num_obs, :α], p_of_K)
+
+@_ @where(gibbs_p_of_K, :num_obs .== 1000, :num_particle .== 1000) |>
+    @transform(_, num_particle_ = "Gibbs") |>
+    vcat(_, @transform(run2_p_of_K, num_particle_ = string.(:num_particle))) |>
+    @transform(_, α_str = ifelse.(:α .== 0.01, "α = 0.01", string.(:α))) |>
+    @where(_, :num_particle_ .!= "1", :α .!= 10, :K .< 9) |>
+    plot(_, x=:K, y=:p_of_K, ygroup=:num_particle_, xgroup=:α_str, color=:num_obs,
+         Geom.subplot_grid(Geom.line, Guide.xticks(orientation=:horizontal)), 
+         Scale.color_discrete(ngray(0.8, 0.0), levels=[10, 100, 1_000, 10_000]), 
+         Guide.colorkey(title="Observations"), 
+         Guide.ylabel("Probability of cluster number \n(by number of particles)", :vertical))
 
 ```
