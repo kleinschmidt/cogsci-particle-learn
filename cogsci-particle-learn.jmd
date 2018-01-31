@@ -32,6 +32,10 @@ ngray(start, finish) = n -> linspace(Gray(start), Gray(finish), n)
 
 ```{julia}
 
+# include("Experiments.jl")
+# using .Experiments
+
+# I had to make an actual honest-to-god package to make this work with JLD2...
 using Experiments
 
 include("VOTs.jl")
@@ -56,7 +60,20 @@ gibbs_summary = results_summary(zip(gibbs_exs, gibbs_res))
 # Results
 
 
-```{julia}
+```{julia; label="pK2"; fig_cap="One measure of success is the posterior probability of two-cluster solutions."}
+plot(run2_summary, x=:num_obs, y=:avg_p_K2, color=:num_particle, xgroup=:α,
+     Geom.subplot_grid(Geom.line, Geom.point), Scale.x_log10, Scale.color_discrete)
+```
+
+
+```{julia; label="meanK"; fig_cap="The expected number of clusters, averaged over runs."}
+plot(run2_summary, x=:num_obs, y=:avg_K_mean, color=:num_particle, xgroup=:α,
+     Geom.subplot_grid(Geom.line, Geom.point), Scale.x_log10, Scale.y_log2, Scale.color_discrete)
+```
+
+
+
+```{julia; label="pK"; fig_cap="The posterior probability assigned to each possible number of components, as a function of the number of observations, number of particles, and α"}
 
 # plot p(K | x, α) for various values of alpha
 
