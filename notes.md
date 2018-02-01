@@ -10,8 +10,19 @@ weakly-labeled inputs.  Distributional learning theories say that you can treat
 this as a clustering problem: detect how many "clusters" or "clumps" of sounds
 there are in your acoustic input.
 
+We know babies (and adults) pick up on the statistical structure of language
+input.
+
 There are many types of models and algorithms for doing this.  One family is
-Bayesian non-parametrics.
+Bayesian non-parametrics.  Normative models are theoretically/conceptually
+elegent.  They've provided lots of insight (that it's _possible_ to learn from
+distributions, that learning at multiple levels simulatneously helps all around,
+that there's a link between acquisition and adaptation).  Normative models are
+useful to put broad constraints on what's _possible_, to set the boundaries (or
+to evaluate different ways of conceptualizing a problem), but they are
+_computational level_ models, not _cognitive (algorithmic) models_.
+
+Ultimately we care about how _people_ do this.  One way to bridge the gap: 
 
 Pros:
 * Potentially infinite number of clusters
@@ -101,3 +112,14 @@ And compare with the standard batch algorithm (Gibbs sampler).
       other levels (lexical etc.)
     * Connectionist models.....???
 
+
+## Conclusion
+
+It's possible to get a pretty good approximation of ideal inference with a
+finite number of hypotheses.
+
+
+# Follow-ups
+
+Order effects: adaptation with a small number of particles, look at correlation
+between responses etc.  Compare w/ hysterisis (Tuller and Lancia?)
