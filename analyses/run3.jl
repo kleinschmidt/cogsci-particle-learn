@@ -1,10 +1,13 @@
 # run a three-component mixture
 
-include(joinpath(@__DIR__, "..", "VOTs.jl"))
-include(joinpath(@__DIR__, "..", "Experiments.jl"))
+dir = @__DIR__
 
+include(joinpath(dir, "..", "VOTs.jl"))
+using VOTs
+
+# created an actual package for this...
+# include(joinpath(dir, "..", "Experiments.jl"))
 @everywhere using Distributions
-@everywhere using VOTs
 @everywhere using Experiments
 
 n_replication = 100
