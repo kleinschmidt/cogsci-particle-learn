@@ -1,7 +1,7 @@
 all: cogsci-particle-learn.pdf
 
 %.md: %.jmd
-	julia -e 'using Weave; weave("$<", doctype="pandoc", throw_errors=true, fig_ext=".pdf", cache=:all)'
+	julia -e 'using Weave; weave("$<", doctype="pandoc", throw_errors=true, fig_ext=".pdf", cache=:user)'
 
 %.tex: %.md cogsci_template.tex
 	pandoc -f markdown -t latex -o $@ --template=latexpaper/cogsci_template.tex $<
