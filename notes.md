@@ -72,6 +72,29 @@ and algorithmic levels of analysis [@Sanborn2010].
 
 ## What
 
+### Bayesian non-parametric models
+
+Have some data points $x_{1:N}$.  We know that these data were generated from
+some number of clusters $K$, where $K$ could be (in principle) anywhere between
+1 and $N$ (the number of data points).  A complete clustering of these data
+points has two parts: the cluster each data point is assigned to (denoted
+$c_{1:N}$), and the properties of the clusters themselves (which in the example
+below are the mean $\mu_k$ and variance $\sigma^2_k$ of a normal distribution,
+but in general are the parameters of some probability distribution).
+
+Bayesian nonparametric models aim to find the posterior probability of
+clusterings given some particular data, $p(c_{1:N}, \mu_{1:K}, \sigma^2{1:K} |
+x_{1:N})$.  In many cases, it's easier to do this in two stages: first, compute
+the distribution of cluster assignments $p(c_{1:N} | x_{1:N})$ (marginalizing
+over possible clusters _parameters_), and then computing the distribution over
+cluster properties $p(\mu_{1:K}, \sigma^2_{1:K} | c_{1:N}, x_{1:N})$.  The
+reason for this is that when using a conjugate prior for the cluster parameters,
+there's no need to actually know the exact properties of cluster to evaluate how
+good it is; all that's needed is the data points that are assigned to that
+cluster (and some measure of how similar they are to each other).
+
+
+
 ### Samples vs. particles
 
 MCMC: sweep once through data, get one hypothesis about how clustered.  Sweep
