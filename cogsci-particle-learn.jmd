@@ -133,7 +133,31 @@ assignments for each sweep.
 ## Online algorithm: Particle filter
 
 In contrast to MCMC algorithms, sequential Monte Carlo (SMC) algorithms do not
-require that all data be available simultaneously.
+require that all data be available simultaneously.  Rather then generating
+samples one at a time based on the entire dataset, they maintain a population of
+hypotheses (or particles), that are each updated in parallel as the data comes
+in.  After $n-1$ observations, particle $j$ has an associated weight
+$w^{(j)}_{n-1}$ and clustering $c_{1:n-1}^{(j)}$.  There are many different
+strategies for updating particle $j$ based on the the next observation $x_n$.
+Here, we follow the approach of [@Chen2000; as described in @Fearnhead2004].
+First, as in the Gibbs sampler, an assignment is drawn from $p(c_n=k |
+c^{(j)}_{1:n-1}, x_{1:n})$.  Next, the weight is updated to be
+$$
+    w_{n}^{(j)} = w_{n-1}^{(j)} \times
+        \frac{\sum_k p((c_{1:n-1}^{(j)},k) | x_{1:n})}
+             {p(c_{1:n-1}^{(j)} | x_{1:n-1})} 
+$$
+(normalized such that all the new weights sum to 1).  The sum in the numerator
+ensures that the new weight reflects the ability of this particle to predict the
+actual data point observed, rather than just how well the sampled component
+explains it.  This helps to maintain more information about the history of
+particles, which is a primary consideration when constructing particle filters.
+
+Finally, in order to prevent a small number of particles stealing all the
+weight, when the variance in weights reaches some threshold, a rejuvination step
+resamples particles (with replacement), and sets the weights to be equal.  This
+allows more promising particles to be more fully explored in the future, and
+eliminates un-promising particles.
 
 # Methods
 
@@ -167,7 +191,13 @@ each dataset, the number of particles (or samples for the Gibbs sampler), the
 number of observations available, and the concentration parameter $\alpha$ were
 varied.  The results for the Gibbs sampler were qualitatively the same across
 the number of samples and number of observations, so results are only shown for
-1,000 samples and 1,000 observations.
+1,000 samples (500 burnin) and 1,000 observations.
+
+For the prior distribution over cluster means and variances, both used a weakly
+informative conjugate Normal-$\Chi^{-2}$ prior [@Gelman2003], with $\mu_0$ and
+$\sigma^2_0$ set to the overall mean and variance of all the VOTs, and $\kappa_0
+= 0.05$ (to allow for significant possible variation in the cluster means) and
+$\nu_0 = 2$ (to constrain the variances to reasonable values).
 
 [^particlesjl]: Available online at
     [github.com/kleinschmidt/Particles.jl](https://github.com/kleinschmidt/Particles.jl)
