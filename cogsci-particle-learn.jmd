@@ -153,11 +153,14 @@ actual data point observed, rather than just how well the sampled component
 explains it.  This helps to maintain more information about the history of
 particles, which is a primary consideration when constructing particle filters.
 
-Finally, in order to prevent a small number of particles stealing all the
-weight, when the variance in weights reaches some threshold, a rejuvination step
-resamples particles (with replacement), and sets the weights to be equal.  This
-allows more promising particles to be more fully explored in the future, and
-eliminates un-promising particles.
+One common problem with particle filters is that a small number of particles
+capture nearly all the weight, which drastically reduces the effective number of
+samples and hence the amount of information about the actual distribution they
+are approximating.  In order to prevent this, when the variance of the weights
+becomes too high, a rejuvination step resamples particles (with replacement)
+proportional to their weights, and resets the weights to be equal.  The
+threshold for the variance of the weights was set to 50% of the mean of the
+weights [as suggested by @Fearnhead2004].
 
 # Methods
 
@@ -194,7 +197,7 @@ the number of samples and number of observations, so results are only shown for
 1,000 samples (500 burnin) and 1,000 observations.
 
 For the prior distribution over cluster means and variances, both used a weakly
-informative conjugate Normal-$\Chi^{-2}$ prior [@Gelman2003], with $\mu_0$ and
+informative conjugate Normal-$\chi^{-2}$ prior [@Gelman2003], with $\mu_0$ and
 $\sigma^2_0$ set to the overall mean and variance of all the VOTs, and $\kappa_0
 = 0.05$ (to allow for significant possible variation in the cluster means) and
 $\nu_0 = 2$ (to constrain the variances to reasonable values).
