@@ -194,12 +194,8 @@ expected number of clusters $E(K | x_{1:N}) = \sum_k k p(K=k | x_{1:N})$
 # using .Experiments
 
 # I had to make an actual honest-to-god package to make this work with JLD2...
+# Pkg.clone("git@github.com:kleinschmidt/Experiments.jl.git")
 using Experiments
-
-using FileIO
-
-# exs, results = load("results/run2-2018-01-30T10:05:12.518.jld2", "exs", "results")
-# gibbs_exs, gibbs_res = load("results/run1_gibbs_2018-01-30T12:18:31.076.jld2", "gibbs_exs", "gibbs_res")
 
 @load "results/run2-2018-01-30T10:05:12.518.jld2" exs results
 @load "results/run1_gibbs_2018-01-30T12:18:31.076.jld2" gibbs_exs gibbs_res
@@ -207,19 +203,69 @@ using FileIO
 run2_ers = flatten(exs, results, :num_obs)
 run2_summary = results_summary(run2_ers)
 
-gibbs_summary = results_summary(zip(gibbs_exs, gibbs_res))
+gibbs_summary = @_ zip(gibbs_exs, gibbs_res) |>
+    results_summary |>
+    @where(_, :num_obs .== 1000, :num_particle .== 1000)
+```
+
+Since the Gibbs sampler provides the "reference" approximation for these models,
+we first examine those results, shown as the gray lines in @Fig:pK2 and
+@Fig:meanK.  The Gibbs sampler performs best with $\alpha=0.1$, allocating the
+majority of the posterior probability to $K=2$.
+
+<!-- points to make:
+
+* particle filter gets closer to the gibbs sampler with more data and more
+  particles.
+* when there are fewer particles, seem to get exaggerated influence of prior
+  (alpha): more bias towards small K for v. low, 
+* excpet for v. small values of alpha
+
+ -->
+
+The particle filter performs best for the smallest value of $\alpha$ tested
+($\alpha = 0.01$).  At this level, it assigns nearly 100% probability to
+2-cluster solutions when 1,000 particles are used, and nearly 90% (and
+increasing) for 100 particles.  For large values of $\alpha \in \{1, 10\}$, the
+particle filter (like the Gibbs sampler) vastly over-estimates the number of
+clusters (@Fig:meanK).  Even at $\alpha = 0.1$, both the particle filter and the
+Gibbs sampler slightly overestimate the number of clusters, assigning some
+small probability to $K=3$.
+
+```{julia; label="pK2"; fig_cap="Posterior probability correct (two-cluster solutions) for particle filter (colors) and Gibbs sampler (gray horizontal lines). Gibbs sampler is shown for 1,000 observations and 1,000 samples."}
+
+plot(run2_summary, xgroup=:α,
+     Geom.subplot_grid(layer(run2_summary, 
+                             x=:num_obs, y=:avg_p_K2, color=:num_particle, xgroup=:α,
+                             Geom.line, Geom.point),
+                       layer(gibbs_summary,
+                             yintercept=:avg_p_K2, xgroup=:α,
+                             Geom.hline,
+                             Theme(default_color=Gray(0.5)))),
+     Scale.x_log10, Scale.color_discrete,
+     Guide.ylabel("Average probability of correct (K=2)"),
+     Guide.xlabel("Number of observations"),
+     Guide.colorkey(title="Number\nParticles"),
+     Guide.manual_color_key("", ["Gibbs"], [Gray(0.5)]))
 
 ```
 
-```{julia; label="pK2"; fig_cap="One measure of success is the posterior probability of two-cluster solutions."}
-plot(run2_summary, x=:num_obs, y=:avg_p_K2, color=:num_particle, xgroup=:α,
-     Geom.subplot_grid(Geom.line, Geom.point), Scale.x_log10, Scale.color_discrete)
-```
+```{julia; label="meanK"; fig_cap="The expected number of clusters for particle filter (colors) and Gibbs sampler (gray horizontal lines).  Gibbs sampler is shown for 1,000 observations and 1,000 samples"}
 
+plot(run2_summary, xgroup=:α
+     Geom.subplot_grid(layer(run2_summary, 
+                             x=:num_obs, y=:avg_K_mean, color=:num_particle, xgroup=:α,
+                             Geom.line, Geom.point),
+                       layer(gibbs_summary,
+                             yintercept=:avg_K_mean, xgroup=:α,
+                             Geom.hline,
+                             Theme(default_color=Gray(0.5)))),
+     Scale.x_log10, Scale.color_discrete,
+     Guide.ylabel("Expected number of clusters"),
+     Guide.xlabel("Number of observations"),
+     Guide.colorkey(title="Number\nParticles"),
+     Guide.manual_color_key("", ["Gibbs"], [Gray(0.5)]))
 
-```{julia; label="meanK"; fig_cap="The expected number of clusters, averaged over runs."}
-plot(run2_summary, x=:num_obs, y=:avg_K_mean, color=:num_particle, xgroup=:α,
-     Geom.subplot_grid(Geom.line, Geom.point), Scale.x_log10, Scale.y_log2, Scale.color_discrete)
 ```
 
 
