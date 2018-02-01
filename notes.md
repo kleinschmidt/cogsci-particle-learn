@@ -3,6 +3,12 @@
 Using sequential monte carlo (aka particle filter) approximations of
 nonparametric Bayesian clustering models for language acquisition.
 
+
+Explore a method for approximate inference that's more psychologically
+plausible: learns from one data point at a time, efficiently.  Doesn't require
+an unlimited tolerance of uncertainty.
+
+
 ## Why
 
 Babies need to learn how many phonetic categories their language has from un- or
@@ -11,18 +17,24 @@ this as a clustering problem: detect how many "clusters" or "clumps" of sounds
 there are in your acoustic input.
 
 We know babies (and adults) pick up on the statistical structure of language
-input.
+input.  Basically two ways this has been modeled: normative/computational-level
+models and cognitive/algorithmic-level models [@Marr1972].
 
-There are many types of models and algorithms for doing this.  One family is
-Bayesian non-parametrics.  Normative models are theoretically/conceptually
-elegent.  They've provided lots of insight (that it's _possible_ to learn from
-distributions, that learning at multiple levels simulatneously helps all around,
-that there's a link between acquisition and adaptation).  Normative models are
-useful to put broad constraints on what's _possible_, to set the boundaries (or
-to evaluate different ways of conceptualizing a problem), but they are
-_computational level_ models, not _cognitive (algorithmic) models_.
+Normative models like Bayesian nonparametric models are
+theoretically/conceptually elegent.  Define/describe how much you can learn
+given the statistical structure of the world and a model of how it works.
+Establish what it's _possible_ to learn starting from certain, clearly stated
+assumptions.
 
-Ultimately we care about how _people_ do this.  One way to bridge the gap: 
+They've provided lots of insight (that it's
+_possible_ to learn from distributions, that learning at multiple levels
+simulatneously helps all around, that there's a link between acquisition and
+adaptation).  Normative models are useful to put broad constraints on what's
+_possible_, to set the boundaries (or to evaluate different ways of
+conceptualizing a problem), but they are _computational level_ models, not
+_cognitive (algorithmic) models_.
+
+
 
 Pros:
 * Potentially infinite number of clusters
