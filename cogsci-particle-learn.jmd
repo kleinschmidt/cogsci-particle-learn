@@ -257,7 +257,8 @@ The particle filter, unlike the Gibbs sampler, works best when $\alpha=0.01$
 infers more than 2 clusters.  For instance, @Fig:pK2, second panel
 ($\alpha=0.1$), shows that the probability assigned to $K=2$ clusters rises to a
 maximum after 100 data points, but then falls with more data as more complex
-clusterings are increasingly preferred (@Fig:pK).
+clusterings are increasingly preferred (@Fig:pK).  Even so, the expected number
+of clusters is just slightly more than 2 (@Fig:meanK).
 
 <!-- points to make:
 
