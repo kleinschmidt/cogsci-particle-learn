@@ -151,7 +151,8 @@ And compare with the standard batch algorithm (Gibbs sampler).
 ## Conclusion
 
 It's possible to get a pretty good approximation of ideal inference with a
-finite number of hypotheses.
+finite number of hypotheses. -> WITHOUT making psychologically implausible
+assumptions like batch processing and infinite data.
 
 
 # Follow-ups
