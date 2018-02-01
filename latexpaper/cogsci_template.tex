@@ -26,6 +26,14 @@
 \usepackage[american]{babel}
 \usepackage[style=apa,backend=biber]{biblatex}
 
+% get rid of month and day
+\AtEveryBibitem{
+  \clearfield{labelmonth}
+  \clearfield{labelday}
+}
+
+\setlength{\bibhang}{\parindent}
+
 \usepackage{csquotes}
 \DeclareLanguageMapping{american}{american-apa}
 \addbibresource{$bibliography$}
