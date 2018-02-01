@@ -22,7 +22,14 @@
 
 \usepackage{cogsci}
 \usepackage{pslatex}
-\usepackage{apacite}
+
+\usepackage[american]{babel}
+\usepackage[style=apa,backend=biber]{biblatex}
+
+\usepackage{csquotes}
+\DeclareLanguageMapping{american}{american-apa}
+\addbibresource{$bibliography$}
+
 
 \usepackage[unicode=true]{hyperref}
 
@@ -97,12 +104,12 @@ $endif$
 $body$
 
 
-\bibliographystyle{apacite}
+% \bibliographystyle{apacite}
 
-\setlength{\bibleftmargin}{.125in}
-\setlength{\bibindent}{-\bibleftmargin}
+% \setlength{\bibleftmargin}{.125in}
+% \setlength{\bibindent}{-\bibleftmargin}
 
-\bibliography{$bibliography$}
+\printbibliography
 
 
 \end{document}
