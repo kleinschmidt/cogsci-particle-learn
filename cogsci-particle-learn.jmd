@@ -208,20 +208,47 @@ gibbs_summary = @_ zip(gibbs_exs, gibbs_res) |>
     @where(_, :num_obs .== 1000, :num_particle .== 1000)
 ```
 
+## Gibbs sampler
+
 Since the Gibbs sampler provides the "reference" approximation for these models,
 we first examine those results, shown as the gray lines in @Fig:pK2 and
 @Fig:meanK.  The Gibbs sampler performs best with $\alpha=0.1$, allocating the
-majority of the posterior probability to $K=2$.
+majority of the posterior probability to $K=2$.  For $\alpha$ an order of
+magnitude smaller or larger than this, the Gibbs sampler infers fewer or more
+(respectively) clusters than there actually are (@Fig:meanK).
+
+## Particle filter
+
+The particle filter, unlike the Gibbs sampler, works best when $\alpha=0.01$
+(the smallest value tested).  For larger values, it eventually overshoots and
+infers more than 2 clusters.  For instance, @Fig:pK2, second panel
+($\alpha=0.1$), shows that the probability assigned to $K=2$ clusters rises to a
+maximum after 100 data points, but then falls with more data as more complex
+clusterings are increasingly preferred (@Fig:pK).
 
 <!-- points to make:
 
-* particle filter gets closer to the gibbs sampler with more data and more
-  particles.
+* works well for v. small alpha (0.01), and surprisingly quickly.
+* particle filter is better approximation (closer to the gibbs sampler) with more
+  observations and more particles.
 * when there are fewer particles, seem to get exaggerated influence of prior
-  (alpha): more bias towards small K for v. low, 
-* excpet for v. small values of alpha
+  (alpha): more bias towards small K for v. low, runs away at higher \alpha.
+* except for v. small values of alpha
+* problem is that it can't keep the full uncertainty about the clustering "in
+  memory", because it can't go back and revise previous classifications (the
+  data is gone).  _that might not be a bad thing for psycological
+  plausibility!_.  And actually may work in favor for smaller learning rates.
+* Also can never go back to simpler solutions once they've fallen out of
+  consideration.  This may be why for large \alpha the number of components runs
+  away.
+* likewise why it works better for small alpha: can't re-visit the decision to
+  create a second cluster, but it'll be hard to do it again in the future
+  (because prior scales with $\alpha/N$.
 
  -->
+
+
+
 
 The particle filter performs best for the smallest value of $\alpha$ tested
 ($\alpha = 0.01$).  At this level, it assigns nearly 100% probability to
@@ -245,14 +272,14 @@ plot(run2_summary, xgroup=:α,
      Scale.x_log10, Scale.color_discrete,
      Guide.ylabel("Average probability of correct (K=2)"),
      Guide.xlabel("Number of observations"),
-     Guide.colorkey(title="Number\nParticles"),
+     Guide.colorkey(title="Particles"),
      Guide.manual_color_key("", ["Gibbs"], [Gray(0.5)]))
 
 ```
 
 ```{julia; label="meanK"; fig_cap="The expected number of clusters for particle filter (colors) and Gibbs sampler (gray horizontal lines).  Gibbs sampler is shown for 1,000 observations and 1,000 samples"}
 
-plot(run2_summary, xgroup=:α
+plot(run2_summary, xgroup=:α,
      Geom.subplot_grid(layer(run2_summary, 
                              x=:num_obs, y=:avg_K_mean, color=:num_particle, xgroup=:α,
                              Geom.line, Geom.point),
@@ -260,10 +287,10 @@ plot(run2_summary, xgroup=:α
                              yintercept=:avg_K_mean, xgroup=:α,
                              Geom.hline,
                              Theme(default_color=Gray(0.5)))),
-     Scale.x_log10, Scale.color_discrete,
+     Scale.x_log10, Scale.y_log2, Scale.color_discrete,
      Guide.ylabel("Expected number of clusters"),
      Guide.xlabel("Number of observations"),
-     Guide.colorkey(title="Number\nParticles"),
+     Guide.colorkey(title="Particles"),
      Guide.manual_color_key("", ["Gibbs"], [Gray(0.5)]))
 
 ```
