@@ -350,7 +350,8 @@ run2_p_of_K = @_ run2_ers |>
     [Dict(er...) for er in _] |>
     dictofarrays |>
     DataFrame |>
-    by(_, [:num_particle, :num_obs, :α], p_of_K)
+    by(_, [:num_particle, :num_obs, :α], p_of_K) |>
+    @where(_, :num_particle .> 1)
 
 gibbs_p_of_K = @_ zip(gibbs_exs, gibbs_res) |>
     [Dict(er...) for er in _] |>
@@ -362,7 +363,7 @@ gibbs_p_of_K = @_ zip(gibbs_exs, gibbs_res) |>
     @transform(_, num_particle_ = "Gibbs") |>
     vcat(_, @transform(run2_p_of_K, num_particle_ = string.(:num_particle))) |>
     @transform(_, α_str = ifelse.(:α .== 0.01, "α = 0.01", string.(:α))) |>
-    @where(_, :num_particle_ .!= "1", :α .!= 10, :K .< 9) |>
+    @where(_, :α .!= 10, :K .< 9) |>
     plot(_, x=:K, y=:p_of_K, ygroup=:num_particle_, xgroup=:α_str, color=:num_obs,
          Geom.subplot_grid(Geom.line, Guide.xticks(orientation=:horizontal)), 
          Scale.color_discrete(ngray(0.8, 0.0), levels=[10, 100, 1_000, 10_000]), 
