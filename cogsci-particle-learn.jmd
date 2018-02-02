@@ -8,8 +8,19 @@ author:
   - "Princeton Neuroscience Institute"
   - "Princeton, NJ 08544 USA"
 abstract: >
-  Babies must learn the structure of their native language---including the
-  number and properties of phonetic categories. Blah BLah.
+    Human infants have the remarkable ability to learn any human language.  One
+    proposed mechanism for this ability is distributional learning, where
+    learners infer the underlying cluster structure from unlabeled input.
+    Computational models of distributional learning have historically been
+    principled but psychologically-implausible computational-level models, or
+    ad hoc but psychologically plausible algorithmic-level models.  Approximate
+    rational models like particle filters can potentially bridge this divide,
+    and allow principled, but psychologically plausible models of distributional
+    learning to be specified and evaluated.  As a proof of concept, I evaluate
+    one such particle filter model, applied to learning English voicing
+    categories from VOT distributions.  I find that this model learns well, but
+    behaves somewhat differently from the standard, unconstained implementation
+    of the underlying rational model.
 bibliography: /home/dave/Documents/papers/zotero.bib
 ---
 
