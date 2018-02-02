@@ -150,8 +150,7 @@ $$
 (normalized such that all the new weights sum to 1).  The sum in the numerator
 ensures that the new weight reflects the ability of this particle to predict the
 actual data point observed, rather than just how well the sampled component
-explains it.  This helps to maintain more information about the history of
-particles, which is a primary consideration when constructing particle filters.
+explains it [see @Chen2000; @Fearnhead2004 for further discussion].
 
 One common problem with particle filters is that a small number of particles
 capture nearly all the weight, which drastically reduces the effective number of
@@ -331,7 +330,7 @@ plot(run2_summary, xgroup=:α,
 
 
 
-```{julia; label="pK"; fig_cap="The posterior probability assigned to each possible number of components, as a function of the number of observations, number of particles, and α"}
+```{julia; label="pK"; fig_cap="The posterior probability assigned to each possible number of components, as a function of the number of observations, number of particles, and \$\\alpha\$"}
 
 # plot p(K | x, α) for various values of alpha
 
