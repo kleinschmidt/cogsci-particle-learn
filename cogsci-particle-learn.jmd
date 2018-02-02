@@ -405,10 +405,15 @@ second-guess its decisions to create additional clusters.  The tendency for
 particle filters to get dug into a particular solution is often a shortcoming,
 but in this case it may be a benefit.  It also suggests that such limited
 resources may actually be a benefit to human learners as well.  It does not,
-however, require that such limitations _change_ with development [@Newport1990]
-or require or particularly benefit from a specific input [@Elman1993].  Indeed,
-one of the advantages of the kind of cognitively constrained rational models
-described here is that it allows a principled exploration of the way that
+however, require that such limitations _change_ with development [as in
+@Newport1990] or require or particularly benefit from a specific input [as in
+@Elman1993].  In fact, the constraints imposed by limited tolerance for
+uncertainty in the particle filter model examined here are in a sense the
+_opposite_ of the "less is more" hypothesis: these constraints _allow_ the
+learner to impose stronger a priori preference for simple explanations and still
+learn, rather than _constituting_ a simplicity preference in and of themselves.
+Indeed, one of the advantages of the kind of cognitively constrained rational
+models described here is that it allows a principled exploration of the way that
 cognitive constraints interact with different kinds of input and structural
 assumptions on the part of the learner [@Rohde1999; @Siegelman2015].
 
