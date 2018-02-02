@@ -368,3 +368,6 @@ gibbs_p_of_K = @_ zip(gibbs_exs, gibbs_res) |>
          Guide.ylabel("Probability of cluster number \n(by number of particles)", :vertical))
 
 ```
+
+# Discussion
+
