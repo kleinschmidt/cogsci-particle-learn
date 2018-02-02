@@ -44,7 +44,7 @@ two different clusters than when they occur in a single, unimodal cluster
 
 There are a number of different models for this "distributional learning", which
 fall into two broad families.  On the one hand, there are _computational-level_
-models [in the sense of @Marr1972], which focus on the nature of the problem to
+models [in the sense of @Marr1982], which focus on the nature of the problem to
 be solved, the information that is available from the world, and the best
 performance that is possible given the combination of those two factors [e.g.,
 @Feldman2013].  On the other hand, there are cognitive, _algorithmic-level_
@@ -63,7 +63,7 @@ uncertainty.
 Algorithmic-level models, on the other hand, serve as existence proofs that
 distributional learning is possible, given particular _representational_
 assumptions.  These models often make ad hoc assumptions in order to better fit
-behavioral data, as in @McMurray2009 who conclude that "winner-take-all"
+behavioral data, as in @McMurray2009b who conclude that "winner-take-all"
 competetive dynamics are necessary for distributional learning.  They also
 generally lack the in-principle guarantees of computational-level models, and
 thus it is unclear whether any particular model's failure or success reflects
@@ -248,12 +248,16 @@ plot(layer(vot_demo, x=:vot, xgroup=:n, Geom.subplot_grid(Geom.histogram(density
 ```
 
 The Gibbs sampler and particle filter models were implemented in Julia
-[@Bezanson2017], and run on 200 randomly generated data sets.[^particlesjl]  For
-each dataset, the number of particles (or samples for the Gibbs sampler), the
-number of observations available, and the concentration parameter $\alpha$ were
-varied.  The results for the Gibbs sampler were qualitatively the same across
-the number of samples and number of observations, so results are only shown for
-1,000 samples (500 burnin) and 1,000 observations.
+[@Bezanson2017].[^particlesjl] Each was run on 200 randomly generated data sets
+of up to 10,000 observations, collecting intermediate results after 10, 100, and
+1,000 observations.  For comparison, 6-month-old infants in @Bergelson2017 heard
+on average around 200 tokens of word-initial /b/ and /p/ in a single day, which
+would be 60,000 extrapolated to an entire year.  For each dataset, the number of
+particles (or samples for the Gibbs sampler) varied (from 10 to 1,000) and the
+concentration parameter $\alpha$ varied (from 0.01 to 10).  The results for the
+Gibbs sampler were qualitatively the same across the number of samples and
+number of observations, so results are only shown for 1,000 samples (after 500
+burnin) and 1,000 observations.
 
 For the prior distribution over cluster means and variances, both used a weakly
 informative conjugate Normal-$\chi^{-2}$ prior [@Gelman2003], with $\mu_0$ and
@@ -313,16 +317,21 @@ magnitude smaller or larger than this, the Gibbs sampler infers fewer or more
 
 The particle filter, unlike the Gibbs sampler, works best when $\alpha=0.01$
 (the smallest value tested).  At this value, with a larger number particles,
-nearly 100% probability is assigned to the true $K=2$ (first panel, @Fig:pK2).
-For larger values of $\alpha$, it eventually overshoots and infers more than 2
-clusters.  For instance, @Fig:pK2, second panel ($\alpha=0.1$), shows that the
-probability assigned to $K=2$ clusters rises to a maximum around 100 data
-points, but then falls with more data as more complex clusterings are
-increasingly preferred (@Fig:pK).  Even though the expected number of clusters
-is just slightly more than 2 (@Fig:meanK) as with the Gibbs sampler, there's no
-reason to think that it would continue to increase with more data, since there's
-no way for the particle filter to go back to simpler solutions once they've been
-forgotten.
+nearly 100% probability is assigned to the true $K=2$ (first panel,
+@Fig:pK2).[^three] For larger values of $\alpha$, it eventually overshoots and
+infers more than 2 clusters.  For instance, @Fig:pK2, second panel
+($\alpha=0.1$), shows that the probability assigned to $K=2$ clusters rises to a
+maximum around 100 data points, but then falls with more data as more complex
+clusterings are increasingly preferred (@Fig:pK).  Even though the expected
+number of clusters is just slightly more than 2 (@Fig:meanK) as with the Gibbs
+sampler, there's no reason to think that it would continue to increase with more
+data, since there's no way for the particle filter to go back to simpler
+solutions once they've been forgotten.
+
+[^three]: Similar results are obtained for a three-component mixture, modeled
+    after the languages described in @Lisker1964 with three voicing categories.
+    The primary difference is that more data is required to correctly infer that
+    there are three categories for low values of $\alpha$.
 
 Generally, particle filters with more particles better match the Gibbs sampler.
 This is not surprising: more particles mean more tolerance for uncertainty,
@@ -393,7 +402,7 @@ plot(run2_summary, xgroup=:α,
 ```
 
 
-```{julia; label="pK"; fig_cap="The posterior probability assigned to each possible number of components, as a function of the number of observations, number of particles, and \$\\alpha\$.  Blue vertical lines show the true number of clusters $K=2$."}
+```{julia; label="pK"; fig_cap="The posterior probability assigned to each possible number of components, as a function of the number of observations, number of particles, and \$\\alpha\$.  Blue vertical lines show the true number of clusters \$K=2\$."}
 
 # plot p(K | x, α) for various values of alpha
 
@@ -514,4 +523,4 @@ this approximation also diverges in potentially interesting ways from a
 less-constrained approximate inference model (a Gibbs sampler), suggesting that
 the constraints posed by limited cognitive resources are a critical piece of the
 puzzle in understanding cognition, even for computational-level modeling
-[@Marr1972].
+[@Marr1982].
