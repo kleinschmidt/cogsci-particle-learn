@@ -297,11 +297,15 @@ using Experiments
 @load "results/run1_gibbs_2018-01-30T12:18:31.076.jld2" gibbs_exs gibbs_res
 
 run2_ers = flatten(exs, results, :num_obs)
-run2_summary = @where(results_summary(run2_ers), :num_particle .> 1)
+run2_summary = @_ run2_ers |>
+    results_summary |>
+    @where(_, :num_particle .> 1) |>
+    @transform(_, α_str = ifelse.(:α .== 0.01, "α = 0.01", string.(:α)))
 
 gibbs_summary = @_ zip(gibbs_exs, gibbs_res) |>
     results_summary |>
-    @where(_, :num_obs .== 1000, :num_particle .== 1000)
+    @where(_, :num_obs .== 1000, :num_particle .== 1000) |>
+    @transform(_, α_str = ifelse.(:α .== 0.01, "α = 0.01", string.(:α)))
 ```
 
 ## Gibbs sampler
@@ -370,12 +374,12 @@ overshoots.
 
 ```{julia; label="pK2"; fig_cap="Posterior probability correct (two-cluster solutions) for particle filter (colors) and Gibbs sampler (gray horizontal lines). Gibbs sampler is shown for 1,000 observations and 1,000 samples."}
 
-plot(run2_summary, xgroup=:α,
+plot(run2_summary, xgroup=:α_str,
      Geom.subplot_grid(layer(run2_summary, 
-                             x=:num_obs, y=:avg_p_K2, color=:num_particle, xgroup=:α,
+                             x=:num_obs, y=:avg_p_K2, color=:num_particle, xgroup=:α_str,
                              Geom.line, Geom.point),
                        layer(gibbs_summary,
-                             yintercept=:avg_p_K2, xgroup=:α,
+                             yintercept=:avg_p_K2, xgroup=:α_str,
                              Geom.hline,
                              Theme(default_color=Gray(0.5)))),
      Scale.x_log10, Scale.color_discrete,
@@ -388,12 +392,12 @@ plot(run2_summary, xgroup=:α,
 
 ```{julia; label="meanK"; fig_cap="The expected number of clusters for particle filter (colors) and Gibbs sampler (gray horizontal lines).  Gibbs sampler is shown for 1,000 observations and 1,000 samples"}
 
-plot(run2_summary, xgroup=:α,
+plot(run2_summary, xgroup=:α_str,
      Geom.subplot_grid(layer(run2_summary, 
-                             x=:num_obs, y=:avg_K_mean, color=:num_particle, xgroup=:α,
+                             x=:num_obs, y=:avg_K_mean, color=:num_particle, xgroup=:α_str,
                              Geom.line, Geom.point),
                        layer(gibbs_summary,
-                             yintercept=:avg_K_mean, xgroup=:α,
+                             yintercept=:avg_K_mean, xgroup=:α_str,
                              Geom.hline,
                              Theme(default_color=Gray(0.5)))),
      Scale.x_log10, Scale.y_log2, Scale.color_discrete,
