@@ -18,9 +18,17 @@ abstract: >
     and allow principled, but psychologically plausible models of distributional
     learning to be specified and evaluated.  As a proof of concept, I evaluate
     one such particle filter model, applied to learning English voicing
-    categories from VOT distributions.  I find that this model learns well, but
-    behaves somewhat differently from the standard, unconstrained Gibbs sampler
-    implementation of the underlying rational model.
+    categories from distributions of voice-onset times (VOTs).  I find that this
+    model learns well, but behaves somewhat differently from the standard,
+    unconstrained Gibbs sampler implementation of the underlying rational
+    model.
+keywords: 
+- Computational modeling
+- Rational models
+- Particle filters
+- Language learning
+- Distributional learning
+- Speech perception
 bibliography: /home/dave/Documents/papers/zotero.bib
 ---
 
@@ -81,11 +89,12 @@ thus it is unclear whether any particular model's failure or success reflects
 fundamental constraints or representational assumptions [though
 computational-level models are not immune to this problem; @Goldwater2009].
 
-Bridging these levels of analysis is critical for a comprehensive understanding
-of human cognition.  One way to approach this bridge is the family of models
-known as rational approximations of rational models [@Sanborn2010].  These
-models provide a principled link between computational-level concerns about the
-structure of the world and the nature of the tasks that the mind must solve, and
+Each level of analysis offers insight, but bridging between these levels is
+critical for a comprehensive understanding of human cognition [@Marr1982].  One
+way to approach such a bridge is the family of models known as rational
+approximations of rational models [@Sanborn2010].  These models provide a
+principled link between computational-level concerns about the structure of the
+world and the nature of the tasks that the mind must solve, and
 algorithmic-level concerns about psychologically plausible representations and
 processes.  In this paper, I explore a psychologically plausible, approximately
 rational model for phonetic distributional learning: particle filters for
