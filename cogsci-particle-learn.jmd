@@ -309,9 +309,12 @@ gibbs_summary = @_ zip(gibbs_exs, gibbs_res) |>
 Since the Gibbs sampler provides the "reference" approximation for these models,
 we first examine those results, shown as the gray lines in @Fig:pK2 and
 @Fig:meanK.  The Gibbs sampler performs best with $\alpha=0.1$, allocating the
-majority of the posterior probability to $K=2$.  For $\alpha$ an order of
+majority of the posterior probability to $K=2$.  Nevertheless, the Gibbs sampler
+maintains substantial uncertainty, allocating some 15-20%probability to
+clusterings with more or less than two clusters.  For $\alpha$ an order of
 magnitude smaller or larger than this, the Gibbs sampler infers fewer or more
-(respectively) clusters than there actually are (@Fig:meanK).
+(respectively) clusters than there actually are (@Fig:meanK), again with some
+substantial uncertainty.
 
 ## Particle filter
 
