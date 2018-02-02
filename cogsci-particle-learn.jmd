@@ -418,4 +418,7 @@ humans do manage to learn the underlying cluster structure from unsupervised
 input like this.  The particular ways in which _models_ fail at this task can be
 instructive for creating better models.  This may mean taking into account
 higher-order structure where it's present, like phonotactic and lexical
-regularities [@Feldman2013].  But it might also mean 
+regularities [@Feldman2013].  But it might also motivate specific techniques to
+get around the difficulty of moving from more complex to less complex
+clusterings, like adding the possibility of merging clusters when rejuvinating
+particles [analogously to reversible-jump MCMC, @Green1995].
