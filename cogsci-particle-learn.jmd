@@ -393,8 +393,7 @@ plot(run2_summary, xgroup=:α,
 ```
 
 
-
-```{julia; label="pK"; fig_cap="The posterior probability assigned to each possible number of components, as a function of the number of observations, number of particles, and \$\\alpha\$"}
+```{julia; label="pK"; fig_cap="The posterior probability assigned to each possible number of components, as a function of the number of observations, number of particles, and \$\\alpha\$.  Blue vertical lines show the true number of clusters $K=2$."}
 
 # plot p(K | x, α) for various values of alpha
 
@@ -426,11 +425,22 @@ gibbs_p_of_K = @_ zip(gibbs_exs, gibbs_res) |>
     vcat(_, @transform(run2_p_of_K, num_particle_ = string.(:num_particle))) |>
     @transform(_, α_str = ifelse.(:α .== 0.01, "α = 0.01", string.(:α))) |>
     @where(_, :α .!= 10, :K .< 9) |>
-    plot(_, x=:K, y=:p_of_K, ygroup=:num_particle_, xgroup=:α_str, color=:num_obs,
-         Geom.subplot_grid(Geom.line, Guide.xticks(orientation=:horizontal)), 
+    plot(_, ygroup=:num_particle_, xgroup=:α_str,
+         Geom.subplot_grid(layer(_,
+                                 x=:K, y=:p_of_K,
+                                 ygroup=:num_particle_, xgroup=:α_str,
+                                 color=:num_obs,
+                                 Geom.line),
+                           layer(by(_, [:num_particle_, :α_str], (d)->DataFrame(K=2)),
+                                 xintercept = :K,
+                                 ygroup=:num_particle_, xgroup=:α_str,
+                                 Geom.vline),
+                           Guide.xticks(orientation=:horizontal)),
          Scale.color_discrete(ngray(0.8, 0.0), levels=[10, 100, 1_000, 10_000]), 
          Guide.colorkey(title="Observations"), 
-         Guide.ylabel("Probability of cluster number \n(by number of particles)", :vertical))
+         Guide.ylabel("Probability of cluster number \n(by number of particles)",
+                      :vertical),
+         Guide.xlabel("Number of clusters."))
 
 ```
 
