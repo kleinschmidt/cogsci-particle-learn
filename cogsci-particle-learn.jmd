@@ -312,15 +312,17 @@ magnitude smaller or larger than this, the Gibbs sampler infers fewer or more
 ## Particle filter
 
 The particle filter, unlike the Gibbs sampler, works best when $\alpha=0.01$
-(the smallest value tested).  For larger values, it eventually overshoots and
-infers more than 2 clusters.  For instance, @Fig:pK2, second panel
-($\alpha=0.1$), shows that the probability assigned to $K=2$ clusters rises to a
-maximum around 100 data points, but then falls with more data as more complex
-clusterings are increasingly preferred (@Fig:pK).  Even though the expected number
-of clusters is just slightly more than 2 (@Fig:meanK) as with the Gibbs sampler,
-there's no reason to think that it would continue to increase with more data,
-since there's no way for the particle filter to go back to simpler solutions
-once they've been forgotten.
+(the smallest value tested).  At this value, with a larger number particles,
+nearly 100% probability is assigned to the true $K=2$ (first panel, @Fig:pK2).
+For larger values of $\alpha$, it eventually overshoots and infers more than 2
+clusters.  For instance, @Fig:pK2, second panel ($\alpha=0.1$), shows that the
+probability assigned to $K=2$ clusters rises to a maximum around 100 data
+points, but then falls with more data as more complex clusterings are
+increasingly preferred (@Fig:pK).  Even though the expected number of clusters
+is just slightly more than 2 (@Fig:meanK) as with the Gibbs sampler, there's no
+reason to think that it would continue to increase with more data, since there's
+no way for the particle filter to go back to simpler solutions once they've been
+forgotten.
 
 Generally, particle filters with more particles better match the Gibbs sampler.
 This is not surprising: more particles mean more tolerance for uncertainty,
