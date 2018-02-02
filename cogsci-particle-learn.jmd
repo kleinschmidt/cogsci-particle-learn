@@ -402,7 +402,7 @@ towards fewer clusters (low $\alpha$).  The particle filter reliably arrives at
 the correct two-cluster structure for low values of $\alpha$, even when the
 Gibbs sampler fails to do so, since the Gibbs sampler can continuously
 second-guess its decisions to create additional clusters.  The tendency for
-particle fitlers to get dug into a particular solution is often a shortcoming,
+particle filters to get dug into a particular solution is often a shortcoming,
 but in this case it may be a benefit.  It also suggests that such limited
 resources may actually be a benefit to human learners as well.  It does not,
 however, require that such limitations _change_ with development [@Newport1990]
@@ -422,3 +422,19 @@ regularities [@Feldman2013].  But it might also motivate specific techniques to
 get around the difficulty of moving from more complex to less complex
 clusterings, like adding the possibility of merging clusters when rejuvinating
 particles [analogously to reversible-jump MCMC, @Green1995].
+
+# Conclusion
+
+Approximately-rational models like the particle filter provide a possible bridge
+between computational-level models and psychologically plausible
+algorithmic-level cognitive models.  A particle filter model of phonetic
+distributional learning is able to learn the underlying cluster structure of the
+English /b/-/p/ contrast based only on the distribution of a single cue (VOT).
+This shows that it is possible to approximate optimal Bayesian inference in this
+domain without making the psychologically-implausible assumptions of batch
+processing and unlimited tolerance of uncertainty.  However, the behavior of
+this approximation also diverges in potentially interesting ways from a
+less-constrained approximate inference model (a Gibbs sampler), suggesting that
+the constraints posed by limited cognitive resources are a critical piece of the
+puzzle in understanding cognition, even for computational-level modeling
+[@Marr1972].
