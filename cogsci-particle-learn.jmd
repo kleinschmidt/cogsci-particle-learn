@@ -30,7 +30,67 @@ ngray(start, finish) = n -> linspace(Gray(start), Gray(finish), n)
 
 ```
 
+Any healthy, hearing human infant can learn any human language, and they can do
+so without requiring much explicit instruction or guidance.  How is this
+possible?  At a basic level, how can an infant figure out that their language
+has, for instance, two different phonetic categories distinguish by voicing
+(e.g., "beach" vs. "peach"), and not three, or just one [@Lisker1964]?  One clue
+comes from the fact that sounds from the same category tend to sound alike,
+moreso than sounds from different categories.  Infants (and adults) are
+sensitive to this cluster structure, and even in the absence of explicit cues or
+instructions learn to distinguish between two sounds when they occur in
+two different clusters than when they occur in a single, unimodal cluster
+[@Maye2002].
 
+There are a number of different models for this "distributional learning", which
+fall into two broad families.  On the one hand, there are _computational-level_
+models [in the sense of @Marr1972], which focus on the nature of the problem to
+be solved, the information that is available from the world, and the best
+performance that is possible given the combination of those two factors [e.g.,
+@Feldman2013].  On the other hand, there are cognitive, _algorithmic-level_
+models, which focus on psychologically plausible representations and processes
+[e.g., @McMurray2009b; @Vallabha2007].  Both of these approaches have provided
+insight into the process of distributional learning.  Computational-level models
+set the boundaries on what is possible _in principle_.  A notable example is the
+work of @Feldman2013 which shows, somewhat counterintuitively, that
+distributional learning of phonetic categories can in general be _enhanced_ by
+simultaneous distributional learning of words.  However, the implementations of
+these models are often profoundly psychologically implausible, and may assume
+that learners have simultaneous access to the entire batch of data to learn
+from, can make multiple passes over that data, or maintain substantial
+uncertainty.
+
+Algorithmic-level models, on the other hand, serve as existence proofs that
+distributional learning is possible, given particular _representational_
+assumptions.  These models often make ad hoc assumptions in order to better fit
+behavioral data, as in @McMurray2009 who conclude that "winner-take-all"
+competetive dynamics are necessary for distributional learning.  They also
+generally lack the in-principle guarantees of computational-level models, and
+thus it is unclear whether any particular model's failure or success reflects
+fundamental constraints or representational assumptions [though
+computational-level models are not immune to this problem; @Goldwater2009].
+
+Bridging these levels of analysis is critical for a comprehensive understanding
+of human cognition.  One way to approach this bridge is the family of models
+known as rational approximations of rational models [@Sanborn2010].  These
+models provide a principled link between computational-level concerns about the
+structure of the world and the nature of the tasks that the mind must solve, and
+algorithmic-level concerns about psychologically plausible representations and
+processes.  In this paper, I explore a psychologically plausible, approximately
+rational model for phonetic distributional learning: particle filters for
+Bayesian non-parametric clustering.  As a case study, I apply this model to
+English stop voicing (e.g., /b/ vs. /p/), and investigate how the performance of
+this model is affected by the constraints of online processing (one data point
+at a time) and limited representational resources, relative to an unconstrained
+distributional learning algorithm.
+
+To start, I review the Bayesian approach to distributional learning as a problem
+of statistical inference under uncertainty.  Next, I briefly summarize the two
+algorithms for doing this inference, a Gibbs sampler batch algorithm, and a
+particle filter online algorithm.  I then analyze simulations of these two
+models on the same (simulated) phonetic cue distributions, focusing on how well
+they can recover the true underlying structure, before discussing the
+implications of these results.
 
 # Bayesian models of distributional learning
 
@@ -425,7 +485,7 @@ instructive for creating better models.  This may mean taking into account
 higher-order structure where it's present, like phonotactic and lexical
 regularities [@Feldman2013].  But it might also motivate specific techniques to
 get around the difficulty of moving from more complex to less complex
-clusterings, like adding the possibility of merging clusters when rejuvinating
+clusterings, like adding the possibility of merging clusters when rejuvenating
 particles [analogously to reversible-jump MCMC, @Green1995].
 
 # Conclusion
