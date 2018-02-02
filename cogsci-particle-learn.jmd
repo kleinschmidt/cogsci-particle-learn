@@ -373,3 +373,48 @@ gibbs_p_of_K = @_ zip(gibbs_exs, gibbs_res) |>
 
 # Discussion
 
+Rational approximations to rational models---like the particle filter explored
+here---provide a natural bridge between computational-level and
+algorithmic-level, cognitive models [@Sanborn2010].  These techniques are useful
+in part because they approximate optimal statistical inference as specified by
+the underlying Bayesian model.  But they also allow us to explore---in a formal,
+quantitative way---how different kinds of cognitive constraints interact with
+the structure of the world to affect human cognition and learning.  In the case
+of phonetic distributional learning, there is no shortage of cognitively
+plausible models [e.g., @McMurray2009b; @Vallabha2007].  The model explored here
+is both psychologically plausible---it requires maintaining a small, finite
+number of hypotheses---and grounded in a computational-level model of the
+problem of distributional learning and its statistically optimal solution.
+
+The approximation to the statistically optimal solution to distributional
+learning provided by the particle filtering algorithm of @Chen2000 can, in fact,
+recover the underlying structure of the particular model system I examined here
+(the American English /b/-/p/ contrast).  More importantly, this particular sort
+of approximation constrains the model in a similar way that language learners
+are constrained: they cannot endlessly re-analyze every single sound they have
+ever heard, nor can they maintain an essentially infinite set of hypotheses
+about how those sounds should be clustered.  In doing so, it provides some
+insight into how people actually solve the statistical problem posed by the
+computational-level model of distributional learning.  Forgetting its own
+history actually _helps_ the particle filter model when there is a strong bias
+towards fewer clusters (low $\alpha$).  The particle filter reliably arrives at
+the correct two-cluster structure for low values of $\alpha$, even when the
+Gibbs sampler fails to do so, since the Gibbs sampler can continuously
+second-guess its decisions to create additional clusters.  The tendency for
+particle fitlers to get dug into a particular solution is often a shortcoming,
+but in this case it may be a benefit.  It also suggests that such limited
+resources may actually be a benefit to human learners as well.  It does not,
+however, require that such limitations _change_ with development [@Newport1990]
+or require or particularly benefit from a specific input [@Elman1993].  Indeed,
+one of the advantages of the kind of cognitively constrained rational models
+described here is that it allows a principled exploration of the way that
+cognitive constraints interact with different kinds of input and structural
+assumptions on the part of the learner [@Rohde1999; @Siegelman2015].
+
+Additionally, specifying and exploring such models of human behavior also has
+the potential to improve basic computational techniques as well.  We know that
+humans do manage to learn the underlying cluster structure from unsupervised
+input like this.  The particular ways in which _models_ fail at this task can be
+instructive for creating better models.  This may mean taking into account
+higher-order structure where it's present, like phonotactic and lexical
+regularities [@Feldman2013].  But it might also mean 
