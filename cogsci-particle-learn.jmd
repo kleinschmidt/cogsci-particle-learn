@@ -233,7 +233,7 @@ using Experiments
 @load "results/run1_gibbs_2018-01-30T12:18:31.076.jld2" gibbs_exs gibbs_res
 
 run2_ers = flatten(exs, results, :num_obs)
-run2_summary = results_summary(run2_ers)
+run2_summary = @where(results_summary(run2_ers), :num_particle .> 1)
 
 gibbs_summary = @_ zip(gibbs_exs, gibbs_res) |>
     results_summary |>
@@ -255,9 +255,23 @@ The particle filter, unlike the Gibbs sampler, works best when $\alpha=0.01$
 (the smallest value tested).  For larger values, it eventually overshoots and
 infers more than 2 clusters.  For instance, @Fig:pK2, second panel
 ($\alpha=0.1$), shows that the probability assigned to $K=2$ clusters rises to a
-maximum after 100 data points, but then falls with more data as more complex
-clusterings are increasingly preferred (@Fig:pK).  Even so, the expected number
-of clusters is just slightly more than 2 (@Fig:meanK).
+maximum around 100 data points, but then falls with more data as more complex
+clusterings are increasingly preferred (@Fig:pK).  Even though the expected number
+of clusters is just slightly more than 2 (@Fig:meanK) as with the Gibbs sampler,
+there's no reason to think that it would continue to increase with more data,
+since there's no way for the particle filter to go back to simpler solutions
+once they've been forgotten.
+
+Generally, particle filters with more particles better match the Gibbs sampler.
+This is not surprising: more particles mean more tolerance for uncertainty,
+which means that the particle filter is less committed to particular
+classifications that it made in the past.  With few particles, it's possible
+(and indeed likely) that most of the particles agree on how the first data
+points should be classified, even if there is (ideally) some uncertainty there.
+Furthermore, with few particles, the prior has outsized influence.  For low
+$\alpha$, the 10-particle filter undershoots the number of clusters inferred by
+the Gibbs sampler (and by more particles), while for high $\alpha$ it
+overshoots.
 
 <!-- points to make:
 
@@ -279,18 +293,6 @@ of clusters is just slightly more than 2 (@Fig:meanK).
   (because prior scales with $\alpha/N$.
 
  -->
-
-
-
-
-The particle filter performs best for the smallest value of $\alpha$ tested
-($\alpha = 0.01$).  At this level, it assigns nearly 100% probability to
-2-cluster solutions when 1,000 particles are used, and nearly 90% (and
-increasing) for 100 particles.  For large values of $\alpha \in \{1, 10\}$, the
-particle filter (like the Gibbs sampler) vastly over-estimates the number of
-clusters (@Fig:meanK).  Even at $\alpha = 0.1$, both the particle filter and the
-Gibbs sampler slightly overestimate the number of clusters, assigning some
-small probability to $K=3$.
 
 ```{julia; label="pK2"; fig_cap="Posterior probability correct (two-cluster solutions) for particle filter (colors) and Gibbs sampler (gray horizontal lines). Gibbs sampler is shown for 1,000 observations and 1,000 samples."}
 
