@@ -1,3 +1,8 @@
+# NOTE: for this to run in parallel, it's needs to be in an actual packge on the
+# laod path. you can do that by running
+# Pkg.clone("git@github.com:kleinschmidt/Experiments.jl.git")
+# @everywhere using Experiments
+
 module Experiments
 using Particles, Distributions, DataFrames, Underscore
 
