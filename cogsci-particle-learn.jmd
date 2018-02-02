@@ -49,15 +49,15 @@ ngray(start, finish) = n -> linspace(Gray(start), Gray(finish), n)
 
 ```
 
-Any healthy, hearing human infant can learn any human language, and they can do
+Any normally developing human infant can learn any human language, and they can do
 so without requiring much explicit instruction or guidance.  How is this
 possible?  At a basic level, how can an infant figure out that their language
-has, for instance, two different phonetic categories distinguish by voicing
+has, for instance, two different phonetic categories distinguished by voicing
 (e.g., "beach" vs. "peach"), and not three, or just one [@Lisker1964]?  One clue
 comes from the fact that sounds from the same category tend to sound alike,
-moreso than sounds from different categories.  Infants (and adults) are
+more so than sounds from different categories.  Infants (and adults) are
 sensitive to this cluster structure, and even in the absence of explicit cues or
-instructions learn to distinguish between two sounds when they occur in
+instructions learn to distinguish between two sounds better when they occur in
 two different clusters than when they occur in a single, unimodal cluster
 [@Maye2002].
 
@@ -76,14 +76,14 @@ distributional learning of phonetic categories can in general be _enhanced_ by
 simultaneous distributional learning of words.  However, the implementations of
 these models are often profoundly psychologically implausible, and may assume
 that learners have simultaneous access to the entire batch of data to learn
-from, can make multiple passes over that data, or maintain substantial
+from, can make multiple passes over that data, or maintain unlimited amounts of
 uncertainty.
 
 Algorithmic-level models, on the other hand, serve as existence proofs that
 distributional learning is possible, given particular _representational_
 assumptions.  These models often make ad hoc assumptions in order to better fit
 behavioral data, as in @McMurray2009b who conclude that "winner-take-all"
-competetive dynamics are necessary for distributional learning.  They also
+competitive dynamics are necessary for distributional learning.  These models also
 generally lack the in-principle guarantees of computational-level models, and
 thus it is unclear whether any particular model's failure or success reflects
 fundamental constraints or representational assumptions [though
@@ -105,9 +105,9 @@ at a time) and limited representational resources, relative to an unconstrained
 distributional learning algorithm.
 
 To start, I review the Bayesian approach to distributional learning as a problem
-of statistical inference under uncertainty.  Next, I briefly summarize the two
-algorithms for doing this inference, a Gibbs sampler batch algorithm, and a
-particle filter online algorithm.  I then analyze simulations of these two
+of statistical inference under uncertainty.  Next, I briefly summarize two
+algorithms for doing this inference: a batch Gibbs sampler algorithm, and an
+online particle filter algorithm.  I then analyze the performance of these two
 models on the same (simulated) phonetic cue distributions, focusing on how well
 they can recover the true underlying structure, before discussing the
 implications of these results.
@@ -122,20 +122,18 @@ some number of clusters $K$, where $K$ could be (in principle) anywhere between
 points has two parts: the cluster that each data point is assigned to (denoted
 $c_{1:N}$), and the properties of the clusters themselves (which in the example
 below are the mean $\mu_k$ and variance $\sigma^2_k$ of a normal distribution,
-but in general are the parameters of some probability distribution).  These
-models allow for a possibly infinite number of clusters, but have an inductive
-bias towards simpler, more parsimonious clusterings.
+but in general are the parameters of some probability distribution).
 
 The first difficulty is that there's no perfect, un-ambiguous solution to this
-problem (in general), since clusters are often overlapping and of dfiferent
+problem (in general), since clusters are often overlapping and of different
 sizes and frequencies.  For this reason, Bayesian nonparametric models frame
 this as a problem of _statistical inference under uncertainty_, and aim to find
-the posterior probability of clusterings given some particular data, $p(c_{1:N},
-\mu_{1:K}, \sigma^2_{1:K} | x_{1:N})$ [see @Gershman2012 for an excellent
-introduction].  In many cases, it's easier to do this in two stages: first,
-compute the distribution of cluster assignments $p(c_{1:N} | x_{1:N})$
-(marginalizing over possible clusters _parameters_), and then later computing
-the distribution over cluster properties _conditional_ on the cluster
+the posterior probability for each possible clustering, given some particular
+data, $p(c_{1:N}, \mu_{1:K}, \sigma^2_{1:K} | x_{1:N})$ [see @Gershman2012 for
+an excellent introduction].  In many cases, it's easier to do this in two
+stages: first, compute the distribution of cluster assignments $p(c_{1:N} |
+x_{1:N})$ (marginalizing over possible clusters _parameters_), and then 
+compute the distribution over cluster properties, conditional on the cluster
 assignments $p(\mu_{1:K}, \sigma^2_{1:K} | c_{1:N}, x_{1:N})$.[^conjugate] Here
 the focus is on the first part: computing the distribution of cluster
 assignments given the data.
@@ -152,9 +150,11 @@ $$
     p(c_{1:N} | x_{1:N}) \propto p(x_{1:N} | c_{1:N}) p(c_{1:N})
 $$
 The first term is the likelihood, or the probability that the observed data is
-generated by a particular hypothetical clustering.  The second term is the
-prior, or how likely such a clustering is before any data is observed.  The
-prior is where inductive biases for simpler clustering can be introduced.  
+generated by a particular hypothetical clustering, which will depend on how
+similar the data points are in each cluster, and on the prior distribution over
+cluster parameters.  The second term is the prior, or how likely such a
+clustering is before any data is observed.  The prior is where inductive biases
+for simpler clustering can be introduced.
 
 The particular prior used here is the Dirichlet process.  This prior has a
 rich-get-richer structure, which is most easily understood by considering the
@@ -178,15 +178,14 @@ data is _exchangeable_ (that order doesn't matter, or that the cluster structure
 is stable over time), and is proportional to $\prod_{2=1}^{N} p(c_i | c_{1:i-1})
 \propto \prod_{k=1}^K \alpha N_k!$ (arbitrarily defining $c_1 = 1$).
 
-
 The second difficulty is that there are an enormous number of possible
-combinations of cluster assignments for $N$ points, $c_{1:N}$.  Even if we know
-that there are only $K=2$ clusters, there are still $2^N$ possible ways to
-assign $N$ points to two clusters, each of which has some probability associated
-with it.  Likewise for every $K$ from 1 to $N$.  Luckily, most of these values
-for $c_{1:N}$ have probability that is so small it's essentially zero, and thus
-the whole distribution $p(c_{1:N} | x_{1:N})$ can be approximated by a
-reasonably small number of _samples_, or hypothetical values of $c_{1:N}$.
+combinations of cluster assignments.  Even if we know that there are only $K=2$
+clusters, there are still $2^N$ possible ways to assign $N$ points to two
+clusters, each of which has some probability associated with it.  Likewise for
+every $K$ from 1 to $N$.  Luckily, most of these values for $c_{1:N}$ have
+probability that is so small it's essentially zero, and thus the whole
+distribution $p(c_{1:N} | x_{1:N})$ can be approximated by a reasonably small
+number of _samples_, or hypothetical values of $c_{1:N}$.
 
 ## Batch algorithm: Gibbs sampler
 
@@ -219,7 +218,7 @@ hypotheses (or particles), that are each updated in parallel as the data comes
 in.  After $n-1$ observations, particle $j$ has an associated weight
 $w^{(j)}_{n-1}$ and clustering $c_{1:n-1}^{(j)}$.  There are many different
 strategies for updating particle $j$ based on the the next observation $x_n$.
-Here, we follow the approach of [@Chen2000; as described in @Fearnhead2004].
+Here, we follow the approach of @Chen2000 [as described in @Fearnhead2004].
 First, as in the Gibbs sampler, an assignment is drawn from $p(c_n=k |
 c^{(j)}_{1:n-1}, x_{1:n})$.  Next, the weight is updated to be
 $$
@@ -236,7 +235,7 @@ One common problem with particle filters is that a small number of particles
 capture nearly all the weight, which drastically reduces the effective number of
 samples and hence the amount of information about the actual distribution they
 are approximating.  In order to prevent this, when the variance of the weights
-becomes too high, a rejuvination step resamples particles (with replacement)
+becomes too high, a rejuvenation step resamples particles (with replacement)
 proportional to their weights, and resets the weights to be equal.  The
 threshold for the variance of the weights was set to 50% of the mean of the
 weights [as suggested by @Fearnhead2004].
@@ -248,7 +247,7 @@ learning, I applied it to the problem of learning the English distinction
 between voiced /b/ and voiceless /p/, based on voice onset time (VOT).  This is
 the primary acoustic cue to voicing for word-initial stops in English
 [@Lisker1964], and exhibits a clear bimodality.  In order to simulate random VOT
-datasets, I fit a normal distribution to the VOTs for /b/ and /p/ from the
+datasets, I fit two normal distributions to the VOTs for /b/ and /p/ from the
 Buckeye corpus [@Pitt2007] by @Nelson2017.  This particular corpus shows low
 levels of talker variability in VOT [see @Kleinschmidta].  @Fig:vothist shows an
 example randomly generated set of VOTs.
@@ -273,9 +272,9 @@ of up to 10,000 observations, collecting intermediate results after 10, 100, and
 1,000 observations.  For comparison, 6-month-old infants in @Bergelson2017 heard
 on average around 200 tokens of word-initial /b/ and /p/ in a single day, which
 would be 60,000 extrapolated to an entire year.  For each dataset, the number of
-particles (or samples for the Gibbs sampler) varied (from 10 to 1,000) and the
-concentration parameter $\alpha$ varied (from 0.01 to 10).  The results for the
-Gibbs sampler were qualitatively the same across the number of samples and
+particles (or samples for the Gibbs sampler) varied (10, 100, and 1,000) and the
+concentration parameter $\alpha$ varied (0.01, 0.1, 1, and 10).  The results for
+the Gibbs sampler were qualitatively the same across the number of samples and
 number of observations, so results are only shown for 1,000 samples (after 500
 burnin) and 1,000 observations.
 
@@ -299,10 +298,9 @@ function, which is 1 if $x=k$ and 0 otherwise).
 # Results
 
 A natural measure of success is the probability assigned to $K=2$, since the
-data was generated by a two-component mixture (@Fig:pK2).  I also plot the
-expected number of clusters $E(K | x_{1:N}) = \sum_k k p(K=k | x_{1:N})$
-(@Fig:meanK), as well as the full distributions ($p(K | x_{1:N})$, @Fig:pK).
-
+data was generated by a two-component mixture (@Fig:pK2).  Additionally,
+@Fig:meanK shows the expected number of clusters $E(K | x_{1:N}) = \sum_k k
+p(K=k | x_{1:N})$, and @Fig:pK shows the full distributions ($p(K | x_{1:N})$.
 
 ```{julia}
 
@@ -332,13 +330,13 @@ gibbs_summary = @_ zip(gibbs_exs, gibbs_res) |>
 
 Since the Gibbs sampler provides the "reference" approximation for these models,
 we first examine those results, shown as the gray lines in @Fig:pK2 and
-@Fig:meanK.  The Gibbs sampler performs best with $\alpha=0.1$, allocating the
-majority of the posterior probability to $K=2$.  Nevertheless, the Gibbs sampler
-maintains substantial uncertainty, allocating some 15-20%probability to
-clusterings with more or less than two clusters.  For $\alpha$ an order of
-magnitude smaller or larger than this, the Gibbs sampler infers fewer or more
-(respectively) clusters than there actually are (@Fig:meanK), again with some
-substantial uncertainty.
+@Fig:meanK.  Of the values tested here, the Gibbs sampler performs best with
+$\alpha=0.1$, allocating the majority of the posterior probability to $K=2$.
+Nevertheless, the Gibbs sampler maintains substantial uncertainty, allocating
+some 15-20%probability to clusterings with more or less than two clusters.  For
+$\alpha$ an order of magnitude smaller or larger than this, the Gibbs sampler
+infers fewer or more (respectively) clusters than there actually are
+(@Fig:meanK), again with some substantial uncertainty.
 
 ## Particle filter
 
