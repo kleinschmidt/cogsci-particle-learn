@@ -489,9 +489,10 @@ quantitative way---how different kinds of cognitive constraints interact with
 the structure of the world to affect human cognition and learning.  In the case
 of phonetic distributional learning, there is no shortage of cognitively
 plausible models [e.g., @McMurray2009b; @Vallabha2007].  The model explored here
-is both psychologically plausible---it requires maintaining a small, finite
-number of hypotheses---and grounded in a computational-level model of the
-problem of distributional learning and its statistically optimal solution.
+psychologically plausible---it takes one data point at a time and only maintains
+a small, finite number of hypothetical clusters--and also grounded in a
+computational-level model of the problem of distributional learning and its
+statistically optimal solution.
 
 The approximation to the statistically optimal solution to distributional
 learning provided by the particle filtering algorithm of @Chen2000 can, in fact,
@@ -507,11 +508,12 @@ history actually _helps_ the particle filter model when there is a strong bias
 towards fewer clusters (low $\alpha$).  The particle filter reliably arrives at
 the correct two-cluster structure for low values of $\alpha$, even when the
 Gibbs sampler fails to do so, since the Gibbs sampler can continuously
-second-guess its decisions to create additional clusters.  The tendency for
-particle filters to get dug into a particular solution is often a shortcoming,
-but in this case it may be a benefit.  It also suggests that such limited
-resources may actually be a benefit to human learners as well.  It does not,
-however, require that such limitations _change_ with development [as in
+second-guess its decisions to create additional clusters.
+
+The tendency for particle filters to get dug into a particular solution is often
+a shortcoming, but in this case it may be a benefit.  It also suggests that such
+limited resources may actually be a benefit to human learners as well.  It does
+not, however, require that such limitations _change_ with development [as in
 @Newport1990] or require or particularly benefit from a specific input [as in
 @Elman1993].  In fact, the constraints imposed by limited tolerance for
 uncertainty in the particle filter model examined here are in a sense the
@@ -533,6 +535,16 @@ regularities [@Feldman2013].  But it might also motivate specific techniques to
 get around the difficulty of moving from more complex to less complex
 clusterings, like adding the possibility of merging clusters when rejuvenating
 particles [analogously to reversible-jump MCMC, @Green1995].
+
+Finally, distributional learning continues even in adult listeners, both in
+second language learning [e.g., @Pajak2011a] and in adapting to unfamiliar
+talkers [@Clayards2008; @Xie2017a].  The same Bayesian models that have been
+applied to distributional learning in acquisition can explain many of the
+patterns observed in adaptation [@Kleinschmidt2015b].  Listeners are able to
+maintain some uncertainty about how previous tokens ought to be categorized
+[@Bicknell], but it is currently unclear how this constrains their ability
+to learn from distributional information.  The models explored here could just
+as easily be applied to adaptation in adults as acquisition in children.
 
 # Conclusion
 
