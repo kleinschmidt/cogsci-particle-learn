@@ -1,1 +1,0 @@
-/home/dave/work/writing/inprep/cogsci-particle-learn/latexpaper/apacite.bst
