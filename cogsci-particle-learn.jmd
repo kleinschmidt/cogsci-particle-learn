@@ -19,8 +19,8 @@ abstract: >
     learning to be specified and evaluated.  As a proof of concept, I evaluate
     one such particle filter model, applied to learning English voicing
     categories from VOT distributions.  I find that this model learns well, but
-    behaves somewhat differently from the standard, unconstained implementation
-    of the underlying rational model.
+    behaves somewhat differently from the standard, unconstrained Gibbs sampler
+    implementation of the underlying rational model.
 bibliography: /home/dave/Documents/papers/zotero.bib
 ---
 
