@@ -1,7 +1,7 @@
 ---
 title: "Learning distributions as they come: Particle filter models for online
   distributional learning of phonetic categories"
-author: 
+author:
 - name: "Dave F. Kleinschmidt"
   email: "davidfk@princeton.edu"
   affiliation:
@@ -22,7 +22,7 @@ abstract: >
     model learns well, but behaves somewhat differently from the standard,
     unconstrained Gibbs sampler implementation of the underlying rational
     model.
-keywords: 
+keywords:
 - Computational modeling
 - Rational models
 - Particle filters
@@ -132,7 +132,7 @@ the posterior probability for each possible clustering, given some particular
 data, $p(c_{1:N}, \mu_{1:K}, \sigma^2_{1:K} | x_{1:N})$ [see @Gershman2012 for
 an excellent introduction].  In many cases, it's easier to do this in two
 stages: first, compute the distribution of cluster assignments $p(c_{1:N} |
-x_{1:N})$ (marginalizing over possible clusters _parameters_), and then 
+x_{1:N})$ (marginalizing over possible clusters _parameters_), and then
 compute the distribution over cluster properties, conditional on the cluster
 assignments $p(\mu_{1:K}, \sigma^2_{1:K} | c_{1:N}, x_{1:N})$.[^conjugate] Here
 the focus is on the first part: computing the distribution of cluster
@@ -224,7 +224,7 @@ c^{(j)}_{1:n-1}, x_{1:n})$.  Next, the weight is updated to be
 $$
     w_{n}^{(j)} = w_{n-1}^{(j)} \times
         \frac{\sum_k p((c_{1:n-1}^{(j)},k) | x_{1:n})}
-             {p(c_{1:n-1}^{(j)} | x_{1:n-1})} 
+             {p(c_{1:n-1}^{(j)} | x_{1:n-1})}
 $$
 (normalized such that all the new weights sum to 1).  The sum in the numerator
 ensures that the new weight reflects the ability of this particle to predict the
@@ -325,7 +325,7 @@ end
 bootstrap_ci(df::AbstractDataFrame, cols::Vector{Symbol}, f::Function; n=1000) =
     reduce(hcat, bootstrap_ci(df, c, f, n=n) for c in cols)
 
-summarize_exp_res(ers) = 
+summarize_exp_res(ers) =
     @_ ers |>
     [Dict(er...) for er in _] |>
     dictofarrays |>
@@ -499,8 +499,8 @@ gibbs_p_of_K = @_ zip(gibbs_exs, gibbs_res) |>
                                  ygroup=:num_particle_, xgroup=:α_str,
                                  Geom.vline),
                            Guide.xticks(orientation=:horizontal)),
-         Scale.color_discrete(ngray(0.8, 0.0), levels=[10, 100, 1_000, 10_000]), 
-         Guide.colorkey(title="Observations"), 
+         Scale.color_discrete(ngray(0.8, 0.0), levels=[10, 100, 1_000, 10_000]),
+         Guide.colorkey(title="Observations"),
          Guide.ylabel("Probability of cluster number \n(by number of particles)",
                       :vertical),
          Guide.xlabel("Number of clusters."))
