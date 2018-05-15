@@ -252,7 +252,7 @@ Buckeye corpus [@Pitt2007] by @Nelson2017.  This particular corpus shows low
 levels of talker variability in VOT [see @Kleinschmidta].  @Fig:vothist shows an
 example randomly generated set of VOTs.
 
-```{julia; label="vothist"; fig_cap="Example sample of VOTs used to assess distributional learning models.  With fewer observations, the cluster structure is not obvious, but with more clusters it becomes clearer."}
+```{julia; label="vothist"; fig_cap="Example sample of VOTs used to assess distributional learning models.  With fewer observations, the cluster structure is not obvious, but with more clusters it bnecomes clearer."}
 
 include("VOTs.jl")
 using .VOTs
@@ -314,14 +314,36 @@ using Experiments
 @load "results/run2-2018-01-30T10:05:12.518.jld2" exs results
 @load "results/run1_gibbs_2018-01-30T12:18:31.076.jld2" gibbs_exs gibbs_res
 
+using Bootstrap
+bootstrap_ci(v::AbstractVector, f::Function; n=1000) =
+    ci(bootstrap(v, f, BasicSampling(n)), BasicConfInt())[1]
+function bootstrap_ci(df::AbstractDataFrame, col::Symbol, f::Function; n=1000)
+    ci = bootstrap_ci(df[col], f, n=n)
+    DataFrame([[c] for c in ci], [col, Symbol("$(col)_low"), Symbol("$(col)_high")])
+end
+
+bootstrap_ci(df::AbstractDataFrame, cols::Vector{Symbol}, f::Function; n=1000) =
+    reduce(hcat, bootstrap_ci(df, c, f, n=n) for c in cols)
+
+summarize_exp_res(ers) = 
+    @_ ers |>
+    [Dict(er...) for er in _] |>
+    dictofarrays |>
+    DataFrame |>
+    @where(_, (!isnan).(:K_mean)) |>
+    @transform(_, p_K_eq_2=get.(:p_of_K, 2, 0)) |>
+    by(_, [:num_particle, :num_obs, :α]) do d
+        bootstrap_ci(d, [:K_mean, :p_K_eq_2], mean)
+    end
+
 run2_ers = flatten(exs, results, :num_obs)
 run2_summary = @_ run2_ers |>
-    results_summary |>
+    summarize_exp_res |>
     @where(_, :num_particle .> 1) |>
     @transform(_, α_str = ifelse.(:α .== 0.01, "α = 0.01", string.(:α)))
 
 gibbs_summary = @_ zip(gibbs_exs, gibbs_res) |>
-    results_summary |>
+    summarize_exp_res |>
     @where(_, :num_obs .== 1000, :num_particle .== 1000) |>
     @transform(_, α_str = ifelse.(:α .== 0.01, "α = 0.01", string.(:α)))
 ```
@@ -390,14 +412,19 @@ overshoots.
 
  -->
 
-```{julia; label="pK2"; fig_cap="Posterior probability correct (two-cluster solutions) for particle filter (colors) and Gibbs sampler (gray horizontal lines). Gibbs sampler is shown for 1,000 observations and 1,000 samples."}
+```{julia; label="pK2"; fig_cap="Posterior probability correct (two-cluster solutions) for particle filter (colors, 95% bootstrapped CIs over runs) and Gibbs sampler (gray horizontal lines). Gibbs sampler is shown for 1,000 observations and 1,000 samples."}
+
+Gadfly.push_theme(style(errorbar_cap_length=2pt))
 
 plot(run2_summary, xgroup=:α_str,
-     Geom.subplot_grid(layer(run2_summary, 
-                             x=:num_obs, y=:avg_p_K2, color=:num_particle, xgroup=:α_str,
-                             Geom.line, Geom.point),
+     Geom.subplot_grid(Coord.cartesian(ymin=0., ymax=1.),
+                       layer(run2_summary,
+                             x=:num_obs, y=:p_K_eq_2,
+                             ymin=:p_K_eq_2_low, ymax=:p_K_eq_2_high,
+                             color=:num_particle, xgroup=:α_str,
+                             Geom.line, Geom.point, Geom.errorbar),
                        layer(gibbs_summary,
-                             yintercept=:avg_p_K2, xgroup=:α_str,
+                             yintercept=:p_K_eq_2, xgroup=:α_str,
                              Geom.hline,
                              Theme(default_color=Gray(0.5)))),
      Scale.x_log10, Scale.color_discrete,
@@ -408,14 +435,16 @@ plot(run2_summary, xgroup=:α_str,
 
 ```
 
-```{julia; label="meanK"; fig_cap="The expected number of clusters for particle filter (colors) and Gibbs sampler (gray horizontal lines).  Gibbs sampler is shown for 1,000 observations and 1,000 samples"}
+```{julia; label="meanK"; fig_cap="The expected number of clusters for particle filter (colors, 95% bootstrapped CIs over runs) and Gibbs sampler (gray horizontal lines).  Gibbs sampler is shown for 1,000 observations and 1,000 samples"}
 
 plot(run2_summary, xgroup=:α_str,
-     Geom.subplot_grid(layer(run2_summary, 
-                             x=:num_obs, y=:avg_K_mean, color=:num_particle, xgroup=:α_str,
-                             Geom.line, Geom.point),
+     Geom.subplot_grid(layer(run2_summary,
+                             x=:num_obs, y=:K_mean,
+                             ymin=:K_mean_low, ymax=:K_mean_high,
+                             color=:num_particle, xgroup=:α_str,
+                             Geom.line, Geom.point, Geom.errorbar),
                        layer(gibbs_summary,
-                             yintercept=:avg_K_mean, xgroup=:α_str,
+                             yintercept=:K_mean, xgroup=:α_str,
                              Geom.hline,
                              Theme(default_color=Gray(0.5)))),
      Scale.x_log10, Scale.y_log2, Scale.color_discrete,
