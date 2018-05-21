@@ -122,7 +122,7 @@ Vary:
 
 Using data based on VOT distributions estiamted from:
   * the Buckeye corpus of conversational English [@Nelson2017]
-  * (TODO: two and three components from @Lisker1964 [following @McMurray2009b])
+  * two and three components from @Lisker1964 [following @McMurray2009b] (see results/run3)
   * (TODO: single-talker VOT distributions from Buckeye?)
 
 Measure number of clusters, according to:

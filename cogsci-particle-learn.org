@@ -1,0 +1,15 @@
+* Poster for cogcsi
+** TODO Report three-components (run3)
+** Alternative measures for success
+*** TODO Entropy-based measure 
+    (avg. entropy over particles?)
+*** TODO Component weight cutoff
+    based on Toscano and McMurray...
+*** TODO confusion-matrix based
+    have the "true" confusion matrix from the simulated data; can calculate
+    p(same) for every pair from particles and compare.
+** TODO Fix one-particle version
+** TODO Run on raw VOT dists?
+* Followup
+** Allow component merging
+   In rejuvination step?  
