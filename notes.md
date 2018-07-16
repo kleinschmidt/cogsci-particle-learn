@@ -159,3 +159,59 @@ assumptions like batch processing and infinite data.
 
 Order effects: adaptation with a small number of particles, look at correlation
 between responses etc.  Compare w/ hysterisis (Tuller and Lancia?)
+
+Connection with toscano and mcmurray model: one-particle solution?
+
+# Poster
+
+Again, what's the point?
+
+1. language acquisition: need to figure out categories based on unlabled
+   observations.
+2. Bayesian models (computational level).  Treat it as a inference problem:
+   prior probability on number of categories (potentially infinite) with a
+   simplicity bias.  Combine with likelihood of data under each number of
+   categories.
+3. This perspective has been **pretty successful!**  BIg problem:
+   _computational_ level.  how could a situated agent with limited resources
+   ever do this?
+
+Conclusion 
+
+1. Can learn the distrbution of cues as observations come one by one.
+2. But need some kind of 'cleanup' to actually make an accurate inference about
+   the number of clusters (which is important for acquiring linguistic
+   knowledge...need to hook into lexicon etc.)
+
+## What I want people to take away:
+
+* SMC is a way to bridge computational and algorithmic/psychological models.
+* But not totally straightforward: need to read out somehow.  eh I hate that.
+
+It _works_, but can't necessarily read off stuff in the obvious way. The number
+of categories the model has ever used isn't a good measure of what it thinks the
+real complexity of the data is, because it's not a good measure of the number of
+categories it'll use in the _future_.
+
+## Want to show:
+
+* logic of modeling: 
+    * computational-level model: infer the number and structure of clusters
+      based on data...in principle an infinite number of categories, but prefer
+      simpler with a "rich get richer" prior.
+    * algorithmic: only maintain a small number of hypotheses, these represent
+      your uncertain beliefs about the way to cluster the data you've seen so
+      far.
+* goodness of fit summaries (number of clusters, etc.)
+    * number of clusters
+    * probability of "correct" solution (number of clusters with > 0.1% of
+      observations, entropy of cluster prior, etc.)
+* cluster solutions
+    * distributions 
+    * assignment similarity
+* some visualization of algorithm, to contrast with Gibbs.
+  
+## Relation to previous work:
+
+* sanborn and navarro stuff: learn categories with particles (what kind of
+  categories?)
